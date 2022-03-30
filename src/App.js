@@ -1,15 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import "./App.css";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Info from "./pages/Info";
 import ErrorPage from "./pages/ErrorPage";
-import AboutWithId from "./pages/AboutWithId";
 import RequireAuth from "./pages/protected/RequireAuth";
 import ProtectedPage from "./pages/protected/ProtectedPage";
 import DashBoard from "./pages/protected/DashBoard";
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import RestrictLoginAndRegister from "./pages/protected/RestrictLoginAndRegister";
 
 const ProtectedRoutes = [
   {
@@ -26,13 +28,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />}></Route>
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/about" exact element={<About />}>
-          <Route path=":id" exact element={<AboutWithId />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route element={<RestrictLoginAndRegister />}>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/signUp" element={<SignUp />}></Route>
         </Route>
         {/* <Route path="/about/:id" exact element={<AboutWithId />} /> */}
-        <Route path="/info" element={<Info />} />
         <Route element={<RequireAuth />}>
           {ProtectedRoutes.map((page, index) => {
             return (

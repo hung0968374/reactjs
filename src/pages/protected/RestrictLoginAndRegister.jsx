@@ -2,12 +2,11 @@ import React from "react";
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function RequireAuth() {
+export default function RestrictLoginAndRegister() {
   const auth = useSelector((state) => state.auth.userAuthenticated);
-  console.log("auth", auth);
   let location = useLocation();
-  if (!auth) {
-    return <Navigate to="/" state={{ from: location }} />;
+  if (auth) {
+    return <Navigate to="/dashboard" state={{ from: location }} />;
   }
 
   return <Outlet />;
