@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
 import Home from "./pages/Home";
@@ -10,6 +9,7 @@ import AboutWithId from "./pages/AboutWithId";
 import RequireAuth from "./pages/protected/RequireAuth";
 import ProtectedPage from "./pages/protected/ProtectedPage";
 import DashBoard from "./pages/protected/DashBoard";
+import Login from "./pages/Login";
 
 const ProtectedRoutes = [
   {
@@ -23,35 +23,11 @@ const ProtectedRoutes = [
 ];
 
 function App() {
-  const count = useSelector((state) => state.counter.value);
-
   return (
     <Router>
-      <h1>This is file App.js</h1>
-      <h3>current count value: {count}</h3>
-
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/about/123">About with id</Link>
-        </li>
-        <li>
-          <Link to="/info">Info</Link>
-        </li>
-        <li>
-          <Link to="/protected">Protected</Link>
-        </li>
-        <li>
-          <Link to="/dashboard">DashBoard</Link>
-        </li>
-      </ul>
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/" element={<Login />}></Route>
+        <Route path="/home" element={<Home />}></Route>
         <Route path="/about" exact element={<About />}>
           <Route path=":id" exact element={<AboutWithId />} />
         </Route>

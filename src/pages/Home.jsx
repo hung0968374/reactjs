@@ -17,6 +17,7 @@ export default function Home() {
   const changeValueOfAuth = () => {
     dispatch(toggleStatus());
   };
+
   return (
     <div>
       <h1>Home - count: {count}</h1>
