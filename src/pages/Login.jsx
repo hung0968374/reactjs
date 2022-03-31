@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import {
   Avatar,
@@ -18,12 +17,9 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Modal } from "antd";
-import "antd/dist/antd.css";
 
 import "../css/Login.css";
-import { api_login } from "../api/index";
-import { setUserInfo } from "../redux/features/authen/authenSlice";
+import { onLoggingIn } from "../redux/features/authen/authenSlice";
 
 function Copyright(props) {
   return (
@@ -41,13 +37,14 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
+  const loading = useSelector((state) => state.auth.loading);
+  console.log("loading", loading);
   const initialLoginValues = {
     email: "",
     password: "",
     rememberMe: false,
   };
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
@@ -59,25 +56,13 @@ export default function Login() {
       .max(20, "Password can not exceed 20 characters"),
   });
 
-  const onSubmitLoginForm = async (values, props) => {
-    try {
-      const response = await api_login({
+  const onSubmitLoginForm = async (values) => {
+    dispatch(
+      onLoggingIn({
         username: values.email,
         password: values.password,
-      });
-      if (response.status === 200) {
-        dispatch(setUserInfo(response.data));
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.log("error", error.response);
-      Modal.error({
-        title: "Login failed",
-        content: error.response.data.message,
-      });
-    }
-    props.resetForm();
-    props.setSubmitting(false);
+      })
+    );
   };
   return (
     <>
@@ -142,9 +127,9 @@ export default function Login() {
                           fullWidth
                           variant="contained"
                           sx={{ mt: 3, mb: 2 }}
-                          disabled={isSubmitting}
+                          disabled={loading}
                         >
-                          {isSubmitting ? "Loading" : "Sign In"}
+                          {loading ? "Loading" : "Sign In"}
                         </Button>
                       </Form>
                     );

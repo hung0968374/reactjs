@@ -1,13 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logOut } from "../../redux/features/authen/authenSlice";
 
 export default function DashBoard() {
-  const userToken = JSON.parse(
-    JSON.parse(localStorage.getItem("persist:root")).auth
-  ).otherInfos.tokens.access.token;
-  console.log("userToken", userToken);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const signOut = () => {
+    dispatch(logOut());
+    // navigate("/login");
+  };
   return (
     <div>
-      <h1>DashBoard</h1>
+      <h1 onClick={signOut}>DashBoard</h1>
     </div>
   );
 }
