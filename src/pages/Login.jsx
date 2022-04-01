@@ -47,9 +47,7 @@ export default function Login() {
   const dispatch = useDispatch();
 
   const loginValidationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Please enter valid email")
-      .required("This field is required"),
+    email: Yup.string().required("This field is required"),
     password: Yup.string()
       .required("This field is required")
       .min(6, "Password must contain at least 6 characters")

@@ -6,7 +6,7 @@ export default function RestrictLoginAndRegister() {
   const auth = useSelector((state) => state.auth.userAuthenticated);
   let location = useLocation();
   if (auth) {
-    return <Navigate to="/dashboard" state={{ from: location }} />;
+    return <Navigate to="/quiz" state={{ from: location }} />;
   }
 
   return <Outlet />;

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 export default function RequireAuth() {
   const auth = useSelector((state) => state.auth.userAuthenticated);
   let location = useLocation();
-  if (auth) {
+  if (!auth) {
     return <Navigate to="/" state={{ from: location }} />;
   }
 
