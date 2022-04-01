@@ -4,7 +4,9 @@ import { ThemeProvider, Card, Box } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Modal } from "antd";
 
+import "antd/dist/antd.css";
 import "../../../css/Quiz.css";
 import useQuiz from "../../../customHook/useQuiz";
 
@@ -20,23 +22,8 @@ const theme = createTheme({
 });
 const answerIdx = [1, 2, 3, 4];
 export default function Quiz() {
-  const [timeLeft, setTimeLeft] = useState(15);
   const [currIdxOfQues, setCurrIdxOfQues] = useState(0);
-  const { questions, fetchingQues } = useQuiz(currIdxOfQues);
-
-  useEffect(() => {
-    const timeInterval = setInterval(() => {
-      setTimeLeft((time) => {
-        if (time >= 1) {
-          time = time - 1;
-        }
-        return time;
-      });
-    }, 1000);
-    return () => {
-      clearInterval(timeInterval);
-    };
-  }, []);
+  const { questions, fetchingQues, setSelectedAns } = useQuiz(currIdxOfQues);
 
   const increseCurrIdx = () => {
     if (currIdxOfQues < questions.length - 1) {
@@ -48,6 +35,25 @@ export default function Quiz() {
       setCurrIdxOfQues((idx) => idx - 1);
     }
   };
+  useEffect(() => {}, [questions]);
+
+  const onSubmitAns = () => {
+    Modal.confirm({
+      title: <div style={{ color: "red" }}>Submit</div>,
+      content: (
+        <div style={{ fontSize: "20px", fontWeight: 500 }}>
+          Are you sure to submit your answer?
+        </div>
+      ),
+      onOk: () => {
+        console.log("questions", questions);
+      },
+      onCancel: () => {
+        console.log("questions", questions);
+      },
+    });
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <div className="quiz_container">
@@ -84,7 +90,7 @@ export default function Quiz() {
                         borderRadius: "5px",
                       }}
                     >
-                      {timeLeft}
+                      {questions[currIdxOfQues]?.timeLeft}
                     </Typography>
                   </div>
                 </Box>
@@ -100,9 +106,32 @@ export default function Quiz() {
                   {answerIdx.map((idx, index) => {
                     return (
                       <div
+                        onClick={() => {
+                          if (questions?.[currIdxOfQues]?.timeLeft === 0) {
+                            Modal.warning({
+                              title: (
+                                <div style={{ color: "red" }}>Time up</div>
+                              ),
+                              content: (
+                                <div
+                                  style={{ fontSize: "20px", fontWeight: 500 }}
+                                >
+                                  Can not change your answer because you have
+                                  run out of time.
+                                </div>
+                              ),
+                            });
+                          } else {
+                            setSelectedAns(
+                              idx,
+                              questions?.[currIdxOfQues]?.[`answer${idx}`]
+                            );
+                          }
+                        }}
                         key={index}
                         className={`quiz_answerContainer fontS20FontW500 ${
-                          index === 1 && "quiz_answerSelected"
+                          idx === questions[currIdxOfQues]?.userAnswerIdx &&
+                          "quiz_answerSelected"
                         }`}
                       >
                         {questions?.[currIdxOfQues]?.[`answer${idx}`]}
@@ -125,14 +154,25 @@ export default function Quiz() {
                   >
                     Previous
                   </Button>
-                  <Button
-                    onClick={increseCurrIdx}
-                    variant="contained"
-                    size="small"
-                    color="primary"
-                  >
-                    Next
-                  </Button>
+                  {currIdxOfQues === questions.length - 1 ? (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="primary"
+                      onClick={onSubmitAns}
+                    >
+                      Submit
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={increseCurrIdx}
+                      variant="contained"
+                      size="small"
+                      color="primary"
+                    >
+                      Next
+                    </Button>
+                  )}
                 </div>
               </div>
             </Card>

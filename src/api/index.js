@@ -79,7 +79,6 @@ createAxiosResponseInterceptor();
 
 export const api_login = (userInfo) => API.post(`/v1/auth/login`, userInfo);
 export const api_register = (userInfo) => {
-  console.log("userInfo", userInfo);
   return API.post(`/v1/auth/register`, userInfo);
 };
 export const api_getQuestions = () => API.get(`/v1/questions?page=1&limit=5`);

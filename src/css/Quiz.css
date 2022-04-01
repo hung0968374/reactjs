@@ -36,9 +36,17 @@
   margin-top: 20px;
   border-radius: 5px;
   background-color: #f0f8ff;
+  cursor: pointer ;
+  user-select: none;          
+}
+.quiz_answerContainer:hover {
+  border: 2px solid #335575;
+  padding: 14px;
 }
 .quiz_answerSelected {
   background-color: #cce5fd;
+  border: 2px solid #335575;
+  padding:14px;
 }
 
 .quiz_footer {
