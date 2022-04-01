@@ -38,7 +38,6 @@ const theme = createTheme();
 
 export default function Login() {
   const loading = useSelector((state) => state.auth.loading);
-  console.log("loading", loading);
   const initialLoginValues = {
     email: "",
     password: "",
@@ -62,6 +61,7 @@ export default function Login() {
       })
     );
   };
+
   return (
     <>
       <ThemeProvider theme={theme}>

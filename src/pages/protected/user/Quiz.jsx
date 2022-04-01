@@ -1,12 +1,12 @@
-import React from "react";
-import { createTheme } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { CircularProgress, createTheme } from "@material-ui/core";
 import { ThemeProvider, Card, Box } from "@mui/material";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+
 import "../../../css/Quiz.css";
+import useQuiz from "../../../customHook/useQuiz";
 
 const theme = createTheme({
   status: {
@@ -18,79 +18,125 @@ const theme = createTheme({
     },
   },
 });
-
+const answerIdx = [1, 2, 3, 4];
 export default function Quiz() {
-  const answers = [1, 2, 3, 4];
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [currIdxOfQues, setCurrIdxOfQues] = useState(0);
+  const { questions, fetchingQues } = useQuiz(currIdxOfQues);
+
+  useEffect(() => {
+    const timeInterval = setInterval(() => {
+      setTimeLeft((time) => {
+        if (time >= 1) {
+          time = time - 1;
+        }
+        return time;
+      });
+    }, 1000);
+    return () => {
+      clearInterval(timeInterval);
+    };
+  }, []);
+
+  const increseCurrIdx = () => {
+    if (currIdxOfQues < questions.length - 1) {
+      setCurrIdxOfQues((idx) => idx + 1);
+    }
+  };
+  const decCurrIdx = () => {
+    if (currIdxOfQues >= 1) {
+      setCurrIdxOfQues((idx) => idx - 1);
+    }
+  };
   return (
     <ThemeProvider theme={theme}>
       <div className="quiz_container">
         <div className="quiz_content_wrapper">
-          <Card sx={{ maxWidth: "100%", px: 4, py: 2 }}>
-            <CardContent>
-              <Box
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography gutterBottom variant="h4" component="div">
-                  Awesome Quiz Application
-                </Typography>
-                <div className="quiz_timeLeft">
-                  <Typography gutterBottom variant="h6" component="div">
-                    Time left:
-                  </Typography>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component="div"
-                    style={{
-                      color: "white",
-                      backgroundColor: "#353B40",
-                      padding: "5px 10px 5px 10px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    15
-                  </Typography>
-                </div>
-              </Box>
-              <hr></hr>
-              <Typography
-                variant="h5"
-                component="div"
-                style={{ fontWeight: "bold", marginTop: "20px" }}
-              >
-                what does HTML stand for
-              </Typography>
-              <div className="quiz_answersContainer">
-                {answers.map((answer, index) => {
-                  return (
-                    <div
-                      className={`quiz_answerContainer fontS20FontW500 ${
-                        index === 1 && "quiz_answerSelected"
-                      }`}
-                    >
-                      answer {index}
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-            <hr></hr>
-            <div className="quiz_footer flexSpaceBetween">
-              <div className="fontS20FontW500">2 of 5 questions</div>
-              <div className="quiz_btns flexSpaceBetween">
-                <Button variant="contained" size="small">
-                  Previous
-                </Button>
-                <Button variant="contained" size="small" color="primary">
-                  Next
-                </Button>
-              </div>
+          {fetchingQues ? (
+            <div className="quiz_progress flexAndCenterAll">
+              <CircularProgress size={150} />
             </div>
-          </Card>
+          ) : (
+            <Card sx={{ maxWidth: "100%", px: 4, py: 2 }}>
+              <CardContent>
+                <Box
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography gutterBottom variant="h4" component="div">
+                    Awesome Quiz Application
+                  </Typography>
+                  <div className="quiz_timeLeft">
+                    <Typography gutterBottom variant="h6" component="div">
+                      Time left:
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h6"
+                      component="div"
+                      style={{
+                        color: "white",
+                        backgroundColor: "#353B40",
+                        padding: "5px 10px 5px 10px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      {timeLeft}
+                    </Typography>
+                  </div>
+                </Box>
+                <hr></hr>
+                <Typography
+                  variant="h5"
+                  component="div"
+                  style={{ fontWeight: "bold", marginTop: "20px" }}
+                >
+                  {questions?.[currIdxOfQues]?.[`question`]}
+                </Typography>
+                <div className="quiz_answersContainer">
+                  {answerIdx.map((idx, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={`quiz_answerContainer fontS20FontW500 ${
+                          index === 1 && "quiz_answerSelected"
+                        }`}
+                      >
+                        {questions?.[currIdxOfQues]?.[`answer${idx}`]}
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+              <hr></hr>
+              <div className="quiz_footer flexSpaceBetween">
+                <div className="fontS20FontW500">
+                  {currIdxOfQues + 1} of {questions.length} questions
+                </div>
+                <div className="quiz_btns flexSpaceBetween">
+                  <Button
+                    onClick={decCurrIdx}
+                    variant="contained"
+                    size="small"
+                    disabled={currIdxOfQues === 0}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={increseCurrIdx}
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </ThemeProvider>

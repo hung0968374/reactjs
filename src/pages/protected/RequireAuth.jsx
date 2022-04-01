@@ -8,6 +8,5 @@ export default function RequireAuth() {
   if (!auth) {
     return <Navigate to="/" state={{ from: location }} />;
   }
-
   return <Outlet />;
 }
