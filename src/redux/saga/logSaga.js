@@ -5,6 +5,5 @@ export function* log(action) {
 }
 
 export default function* logSaga() {
-  console.log("log saga");
   yield takeEvery("*", log);
 }

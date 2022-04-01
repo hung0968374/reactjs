@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -12,12 +11,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Modal } from "antd";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import "antd/dist/antd.css";
-import { api_register } from "../api";
+import useRegister from "../customHook/useRegister";
 
 function Copyright(props) {
   return (
@@ -40,7 +38,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const navigate = useNavigate();
+  const { loading, registerUser } = useRegister();
 
   const initialSignUpValues = {
     username: "",
@@ -69,27 +67,13 @@ export default function SignUp() {
       .required("This field is required"),
   });
 
-  const onSubmitSignUpForm = async (values, props) => {
+  const onSubmitSignUpForm = async (values) => {
     const params = {
       username: values.username,
       password: values.password,
       email: values.email,
     };
-    try {
-      await api_register(params);
-      Modal.success({
-        title: "Success",
-        content: "Your account has been created",
-        onOk: () => {
-          navigate("/login");
-        },
-      });
-    } catch (error) {
-      Modal.error({
-        title: "Register failed",
-        content: error.response.data.message,
-      });
-    }
+    registerUser(params);
   };
   return (
     <ThemeProvider theme={theme}>
@@ -172,8 +156,9 @@ export default function SignUp() {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
+                        disabled={loading}
                       >
-                        Sign Up
+                        {loading ? "Loading" : "Sign up"}
                       </Button>
                     </Form>
                   );

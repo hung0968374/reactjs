@@ -28,5 +28,4 @@ export function* fetchUser(action) {
 
 export default function* loginSaga() {
   yield takeEvery(onLoggingIn().type, fetchUser);
-  console.log("login saga");
 }

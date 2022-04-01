@@ -7,20 +7,16 @@ import {
 
 import ErrorPage from "./pages/ErrorPage";
 import RequireAuth from "./pages/protected/RequireAuth";
-import ProtectedPage from "./pages/protected/ProtectedPage";
-import DashBoard from "./pages/protected/DashBoard";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import RestrictLoginAndRegister from "./pages/protected/RestrictLoginAndRegister";
+import Quiz from "./pages/protected/user/Quiz";
+import QuizLayout from "./pages/Layout/QuizLayout";
 
 const ProtectedRoutes = [
   {
-    path: "/protected",
-    component: <ProtectedPage />,
-  },
-  {
-    path: "/dashboard",
-    component: <DashBoard />,
+    path: "/quiz",
+    component: <Quiz />,
   },
 ];
 
@@ -35,11 +31,9 @@ function App() {
         </Route>
         {/* <Route path="/about/:id" exact element={<AboutWithId />} /> */}
         <Route element={<RequireAuth />}>
-          {ProtectedRoutes.map((page, index) => {
-            return (
-              <Route path={page.path} element={page.component} key={index} />
-            );
-          })}
+          <Route path="/quiz" element={<QuizLayout />}>
+            <Route path="" element={<Quiz />}></Route>
+          </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
