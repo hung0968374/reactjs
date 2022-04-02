@@ -1,24 +1,32 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { api_getQuestions } from "../api";
 
 export default function useQuiz(currIdxOfQues) {
   const [questions, setQuestions] = useState([]);
   const [fetchingQues, setFetchingQues] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]);
 
   const fetchQuestions = useCallback(async () => {
     setFetchingQues(true);
     const response = await api_getQuestions();
     const datas = response.data.results;
 
+    const answers = [];
     const questionsWithTimer = datas.map((el) => {
+      answers.push({
+        id: el.id,
+        userAnswerIdx: undefined,
+        userAnswerText: "",
+        correctAns: "",
+        result: undefined,
+      });
       return {
         ...el,
         timeLeft: 15,
-        userAnswerIdx: undefined,
-        userAnswerText: "",
       };
     });
 
+    setUserAnswers(answers);
     setQuestions(questionsWithTimer);
     setFetchingQues(false);
   }, []);
@@ -26,7 +34,7 @@ export default function useQuiz(currIdxOfQues) {
   useEffect(() => {
     setTimeout(() => {
       fetchQuestions();
-    }, 200);
+    }, 0);
   }, [fetchQuestions]);
 
   useEffect(() => {
@@ -56,20 +64,43 @@ export default function useQuiz(currIdxOfQues) {
 
   const setSelectedAns = useCallback(
     (idx, ansText) => {
-      const newQuestion = {
-        ...questions[currIdxOfQues],
+      const newAnswer = {
+        ...userAnswers[currIdxOfQues],
         userAnswerIdx: idx,
         userAnswerText: ansText,
       };
-      const newQues = questions.map((el, idx) => {
+      const newAnswers = userAnswers.map((el, idx) => {
         if (currIdxOfQues !== idx) {
           return el;
         }
-        return newQuestion;
+        return newAnswer;
       });
-      setQuestions(newQues);
+      setUserAnswers(newAnswers);
     },
-    [currIdxOfQues, questions]
+    [currIdxOfQues, userAnswers]
   );
-  return { questions, fetchingQues, setSelectedAns };
+
+  const revealCorrectAns = useCallback(
+    (datas) => {
+      const revealedQuestions = [];
+      datas.forEach((element, idx) => {
+        revealedQuestions.push({
+          ...questions[idx],
+          correctAns: element.correctanswer,
+          result: element.result,
+        });
+      });
+      setQuestions(() => revealedQuestions);
+    },
+    [questions]
+  );
+
+  return {
+    questions,
+    fetchingQues,
+    setSelectedAns,
+    userAnswers,
+    fetchQuestions,
+    revealCorrectAns,
+  };
 }

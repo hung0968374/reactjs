@@ -82,3 +82,5 @@ export const api_register = (userInfo) => {
   return API.post(`/v1/auth/register`, userInfo);
 };
 export const api_getQuestions = () => API.get(`/v1/questions?page=1&limit=5`);
+export const api_submitQuestions = (userAnswers) =>
+  API.post(`/v1/questions/submit`, userAnswers);

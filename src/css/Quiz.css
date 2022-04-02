@@ -48,6 +48,14 @@
   border: 2px solid #335575;
   padding:14px;
 }
+.quiz_trueAns{
+  border: 2px solid #2ba50c;
+  padding:14px;
+}
+.quiz_falseAns{
+  border: 2px solid red;
+  padding:14px;
+}
 
 .quiz_footer {
   width: 100%;
@@ -55,6 +63,9 @@
 }
 .quiz_btns {
   width: 30%;
+}
+.quiz_bttnsSubmitted{
+  width: 40%;
 }
 .quiz_timeLeft {
   border-radius: 5px;
