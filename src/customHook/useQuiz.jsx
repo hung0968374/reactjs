@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { api_getQuestions } from "../api";
 
-export default function useQuiz(currIdxOfQues) {
+export default function useQuiz(currIdxOfQues, questionSubmitted = false) {
   const [questions, setQuestions] = useState([]);
   const [fetchingQues, setFetchingQues] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
@@ -39,20 +39,22 @@ export default function useQuiz(currIdxOfQues) {
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
-      if (questions.length > 0) {
-        if (questions[currIdxOfQues].timeLeft >= 1) {
-          const newQuestionTimer = (questions[currIdxOfQues].timeLeft -= 1);
-          const newQuestion = {
-            ...questions[currIdxOfQues],
-            timeLeft: newQuestionTimer,
-          };
-          const newQues = questions.map((el, idx) => {
-            if (currIdxOfQues !== idx) {
-              return el;
-            }
-            return newQuestion;
-          });
-          setQuestions(newQues);
+      if (!questionSubmitted) {
+        if (questions.length > 0) {
+          if (questions[currIdxOfQues].timeLeft >= 1) {
+            const newQuestionTimer = (questions[currIdxOfQues].timeLeft -= 1);
+            const newQuestion = {
+              ...questions[currIdxOfQues],
+              timeLeft: newQuestionTimer,
+            };
+            const newQues = questions.map((el, idx) => {
+              if (currIdxOfQues !== idx) {
+                return el;
+              }
+              return newQuestion;
+            });
+            setQuestions(newQues);
+          }
         }
       }
     }, 1000);

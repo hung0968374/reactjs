@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useNavigate, Outlet } from "react-router-dom";
 import { createTheme } from "@material-ui/core";
 import { ThemeProvider } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../redux/features/authen/authenSlice";
 
 const settings = [
@@ -26,6 +26,7 @@ const theme = createTheme();
 
 const QuizLayout = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const userAvatar = useSelector((state) => state.auth.otherInfos.user.avatar);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -63,7 +64,7 @@ const QuizLayout = () => {
 
               <Box>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src={userAvatar} />
                 </IconButton>
                 <Menu
                   sx={{ mt: "45px" }}

@@ -12,6 +12,9 @@ import SignUp from "./pages/SignUp";
 import RestrictLoginAndRegister from "./pages/protected/RestrictLoginAndRegister";
 import Quiz from "./pages/protected/user/Quiz";
 import QuizLayout from "./pages/Layout/QuizLayout";
+import UserAuth from "./pages/protected/user/UserAuth";
+import AdminAuth from "./pages/protected/admin/AdminAuth";
+import Dashboard from "./pages/protected/admin/Dashboard";
 
 const ProtectedRoutes = [
   {
@@ -29,10 +32,16 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/signUp" element={<SignUp />}></Route>
         </Route>
-        {/* <Route path="/about/:id" exact element={<AboutWithId />} /> */}
         <Route element={<RequireAuth />}>
-          <Route path="/quiz" element={<QuizLayout />}>
-            <Route path="" element={<Quiz />}></Route>
+          <Route element={<UserAuth />}>
+            <Route path="/quiz" element={<QuizLayout />}>
+              <Route path="" element={<Quiz />}></Route>
+            </Route>
+          </Route>
+          <Route path="/admin" element={<AdminAuth />}>
+            <Route path="" element={<QuizLayout />}>
+              <Route path="dashboard" element={<Dashboard />}></Route>
+            </Route>
           </Route>
         </Route>
         <Route path="*" element={<ErrorPage />} />

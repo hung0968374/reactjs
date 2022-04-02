@@ -25,6 +25,7 @@ const answerIdx = [1, 2, 3, 4];
 
 export default function Quiz() {
   const [currIdxOfQues, setCurrIdxOfQues] = useState(0);
+  const [questionSubmitted, setQuestionSubmitted] = useState(false);
   const {
     questions,
     fetchingQues,
@@ -32,8 +33,7 @@ export default function Quiz() {
     userAnswers,
     fetchQuestions,
     revealCorrectAns,
-  } = useQuiz(currIdxOfQues);
-  const [questionSubmitted, setQuestionSubmitted] = useState(false);
+  } = useQuiz(currIdxOfQues, questionSubmitted);
 
   const increseCurrIdx = () => {
     if (currIdxOfQues < questions.length - 1) {
@@ -99,7 +99,17 @@ export default function Quiz() {
   };
 
   const chooseAnswer = (idx) => {
-    if (questions?.[currIdxOfQues]?.timeLeft === 0) {
+    if (questionSubmitted) {
+      // Modal.warning({
+      //   title: <div style={{ color: "red" }}>Restricted</div>,
+      //   content: (
+      //     <div style={{ fontSize: "20px", fontWeight: 500 }}>
+      //       You have submitted your answers.
+      //     </div>
+      //   ),
+      // });
+      return;
+    } else if (questions?.[currIdxOfQues]?.timeLeft === 0) {
       Modal.warning({
         title: <div style={{ color: "red" }}>Time up</div>,
         content: (
@@ -108,15 +118,7 @@ export default function Quiz() {
           </div>
         ),
       });
-    } else if (questionSubmitted) {
-      Modal.warning({
-        title: <div style={{ color: "red" }}>Restricted</div>,
-        content: (
-          <div style={{ fontSize: "20px", fontWeight: 500 }}>
-            You have submitted your answers.
-          </div>
-        ),
-      });
+      return;
     } else {
       setSelectedAns(idx, questions?.[currIdxOfQues]?.[`answer${idx}`]);
     }
