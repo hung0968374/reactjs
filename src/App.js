@@ -15,6 +15,7 @@ import QuizLayout from "./pages/Layout/QuizLayout";
 import UserAuth from "./pages/protected/user/UserAuth";
 import AdminAuth from "./pages/protected/admin/AdminAuth";
 import Dashboard from "./pages/protected/admin/Dashboard";
+import AdminLayout from "./pages/Layout/admin/AdminLayout";
 
 const ProtectedRoutes = [
   {
@@ -22,7 +23,6 @@ const ProtectedRoutes = [
     component: <Quiz />,
   },
 ];
-
 function App() {
   return (
     <Router>
@@ -39,7 +39,7 @@ function App() {
             </Route>
           </Route>
           <Route path="/admin" element={<AdminAuth />}>
-            <Route path="" element={<QuizLayout />}>
+            <Route path="" element={<AdminLayout />}>
               <Route path="dashboard" element={<Dashboard />}></Route>
             </Route>
           </Route>

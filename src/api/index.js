@@ -4,6 +4,8 @@ const API = axios.create({
   baseURL: "https://fwa-ec-quiz.herokuapp.com/",
 });
 
+const LOGIN_ERROR = "Incorrect username or password";
+
 API.interceptors.request.use((req) => {
   const userToken = JSON.parse(
     JSON.parse(localStorage.getItem("persist:root"))?.auth
@@ -41,12 +43,14 @@ function createAxiosResponseInterceptor() {
   const interceptor = API.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response.status !== 401) {
+      if (
+        error.response.status !== 401 ||
+        error.response.data.message === LOGIN_ERROR
+      ) {
         return Promise.reject(error);
       }
 
       API.interceptors.response.eject(interceptor);
-
       return axios
         .post("https://fwa-ec-quiz.herokuapp.com/v1/auth/refresh-tokens", {
           refreshToken: userRefreshToken,
@@ -84,3 +88,6 @@ export const api_register = (userInfo) => {
 export const api_getQuestions = () => API.get(`/v1/questions?page=1&limit=5`);
 export const api_submitQuestions = (userAnswers) =>
   API.post(`/v1/questions/submit`, userAnswers);
+export const api_admin_getQuestions = () => API.get(`/v1/questions/edit`);
+export const api_admin_deleteQuestions = (quesId) =>
+  API.delete(`/v1/questions/edit/${quesId}`);
