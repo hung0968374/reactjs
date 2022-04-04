@@ -86,6 +86,7 @@ export default function Login() {
                   validationSchema={loginValidationSchema}
                 >
                   {({ values, isSubmitting }) => {
+                    console.log("values", values);
                     return (
                       <Form>
                         <Field

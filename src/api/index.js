@@ -91,3 +91,5 @@ export const api_submitQuestions = (userAnswers) =>
 export const api_admin_getQuestions = () => API.get(`/v1/questions/edit`);
 export const api_admin_deleteQuestions = (quesId) =>
   API.delete(`/v1/questions/edit/${quesId}`);
+export const api_admin_createNewQues = (obj) =>
+  API.post(`/v1/questions/edit`, obj);
