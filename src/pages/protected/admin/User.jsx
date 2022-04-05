@@ -29,7 +29,11 @@ export default function User() {
 
   const onUpdateUser = (rowData, dataIdx) => {
     setIsUpdatingUser(true);
-    setDataForModal(users[dataIdx.dataIndex]);
+    const user = { ...users[dataIdx.dataIndex] };
+    delete user.isEmailVerified;
+    delete user.score;
+    user.password = "";
+    setDataForModal(user);
   };
 
   const options = {
