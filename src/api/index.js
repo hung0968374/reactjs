@@ -95,3 +95,7 @@ export const api_admin_createNewQues = (obj) =>
   API.post(`/v1/questions/edit`, obj);
 export const api_admin_updateQues = (id, obj) =>
   API.patch(`/v1/questions/edit/${id}`, obj);
+export const api_admin_getUsers = () => API.get(`/v1/users/`);
+export const api_admin_createNewUser = (obj) => API.post(`/v1/users/`, obj);
+export const api_admin_updateUser = (id, userInfo) =>
+  API.patch(`/v1/users/${id}`, userInfo);

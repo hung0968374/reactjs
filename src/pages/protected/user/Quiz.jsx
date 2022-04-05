@@ -70,7 +70,6 @@ export default function Quiz() {
         });
         try {
           const response = await api_submitQuestions(params);
-          console.log("response", response);
           const amountOfCorrectAns = response.data.reduce((prev, curr) => {
             if (curr.result === true) {
               return (prev += 1);
@@ -100,14 +99,6 @@ export default function Quiz() {
 
   const chooseAnswer = (idx) => {
     if (questionSubmitted) {
-      // Modal.warning({
-      //   title: <div style={{ color: "red" }}>Restricted</div>,
-      //   content: (
-      //     <div style={{ fontSize: "20px", fontWeight: 500 }}>
-      //       You have submitted your answers.
-      //     </div>
-      //   ),
-      // });
       return;
     } else if (questions?.[currIdxOfQues]?.timeLeft === 0) {
       Modal.warning({

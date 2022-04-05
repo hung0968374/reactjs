@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
 import useDashBoard from "../../../customHook/useDashBoard";
-import QuestionModal from "./QuestionModal";
+import QuestionModal from "./modal/QuestionModal";
 
 const myOwnToolBar = (addQuestionModal, setAddQuestionModal) => {
   return (
@@ -53,8 +53,8 @@ export default function DashBoard() {
     tableBodyMaxHeight,
     filter: false,
     print: false,
+    download: false,
     onRowsDelete: deleteQues,
-    onDownload: false,
     customToolbar: () => myOwnToolBar(addQuesModal, setAddQuesModal),
     onRowClick: onUpdateQues,
   };

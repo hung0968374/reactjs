@@ -134,13 +134,15 @@ export default function AdminLayout() {
           <Container style={{ maxWidth: "90%" }}>
             <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
               <Box sx={{ display: "flex" }}>
-                <IconButton
-                  onClick={handleDrawerOpen}
-                  sx={{ mr: 2, ...(open && { display: "none" }) }}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
+                {!open && (
+                  <IconButton
+                    onClick={handleDrawerOpen}
+                    sx={{ mr: 2, ...(open && { display: "none" }) }}
+                    color="inherit"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                )}
                 <Typography
                   variant="h4"
                   noWrap

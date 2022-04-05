@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Modal } from "antd";
-import "../../../css/Dashboard.css";
 import "antd/dist/antd.css";
-import { api_admin_createNewQues, api_admin_updateQues } from "../../../api";
+import * as Yup from "yup";
+
+import "../../../../css/Dashboard.css";
+import { api_admin_createNewQues, api_admin_updateQues } from "../../../../api";
 
 export default function QuestionModal({
   addQuesModal,
@@ -29,6 +31,16 @@ export default function QuestionModal({
         correctanswer: "",
       }
     : dataForModal;
+
+  const validateQuestion = Yup.object().shape({
+    question: Yup.string().required("This field is required"),
+    answer1: Yup.string().required("This field is required"),
+    answer2: Yup.string().required("This field is required"),
+    answer3: Yup.string().required("This field is required"),
+    answer4: Yup.string().required("This field is required"),
+    correctanswer: Yup.string().required("This field is required"),
+  });
+
   const handleSubmit = async (values, props) => {
     if (addQuesModal) {
       try {
@@ -79,7 +91,7 @@ export default function QuestionModal({
         setDatas(newDatas);
         Modal.success({
           title: "Success",
-          content: "A new question has been updated successfully.",
+          content: "Question selected has been updated successfully.",
         });
       } catch (error) {
         if (error.response.status === 400) {
@@ -110,6 +122,7 @@ export default function QuestionModal({
         enableReinitialize
         initialValues={initialValues}
         onSubmit={handleSubmit}
+        validationSchema={validateQuestion}
       >
         {(props) => {
           return (
@@ -142,6 +155,7 @@ export default function QuestionModal({
                         name="question"
                         label="Question"
                         value={props.values.question}
+                        helperText={<ErrorMessage name="question" />}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -153,6 +167,7 @@ export default function QuestionModal({
                         label="Answer1"
                         name="answer1"
                         value={props.values.answer1}
+                        helperText={<ErrorMessage name="answer1" />}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -163,6 +178,7 @@ export default function QuestionModal({
                         label="Answer2"
                         name="answer2"
                         value={props.values.answer2}
+                        helperText={<ErrorMessage name="answer2" />}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -174,6 +190,7 @@ export default function QuestionModal({
                         label="Answer3"
                         name="answer3"
                         value={props.values.answer3}
+                        helperText={<ErrorMessage name="answer3" />}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -184,6 +201,7 @@ export default function QuestionModal({
                         label="Answer4"
                         name="answer4"
                         value={props.values.answer4}
+                        helperText={<ErrorMessage name="answer4" />}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -194,6 +212,7 @@ export default function QuestionModal({
                         name="correctanswer"
                         label="Correct Answer"
                         value={props.values.correctanswer}
+                        helperText={<ErrorMessage name="correctanswer" />}
                       />
                     </Grid>
                   </Grid>
