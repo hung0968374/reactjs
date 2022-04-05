@@ -28,37 +28,41 @@ export default function HandleUserModal({
         email: "",
         role: "",
         avatar: "",
+        id: "",
       }
     : dataForModal;
 
-  const validateUserInfo = Yup.object().shape({
-    email: Yup.string()
-      .email("Please enter valid email")
-      .required("This field is required"),
-    password: Yup.string()
-      .required("This field is required")
-      .min(8, "Password must contain at least 8 characters")
-      .max(20, "Password can not exceed 20 characters")
-      .matches(
-        /^(?=.*[a-zA-Z])(?=.*[0-9])/,
-        "Password must contain at least one char and one number"
-      ),
-    username: Yup.string()
-      .required("This field is required")
-      .min(6, "User name must contain at least 6 characters")
-      .max(20, "User name can not exceed 20 characters"),
-    role: Yup.string()
-      .oneOf(["user", "admin"], `Role must be "admin" or "user"`)
-      .required("This field is required"),
-    avatar: Yup.string().required("This field is required"),
-  });
-
-  const handleSubmit = async (values, props) => {
+  const validateUserInfo = isAddingUser
+    ? Yup.object().shape({
+        email: Yup.string()
+          .email("Please enter valid email")
+          .required("This field is required"),
+        password: Yup.string()
+          .required("This field is required")
+          .min(8, "Password must contain at least 8 characters")
+          .max(20, "Password can not exceed 20 characters")
+          .matches(
+            /^(?=.*[a-zA-Z])(?=.*[0-9])/,
+            "Password must contain at least one char and one number"
+          ),
+        username: Yup.string()
+          .required("This field is required")
+          .min(6, "User name must contain at least 6 characters")
+          .max(30, "User name can not exceed 30 characters"),
+        role: Yup.string()
+          .oneOf(["user", "admin"], `Role must be "admin" or "user"`)
+          .required("This field is required"),
+      })
+    : Yup.object().shape({
+        avatar: Yup.string().required("This field is required"),
+      });
+  const handleSubmitUser = async (values, props) => {
     if (isAddingUser) {
       try {
         setSubmitting(true);
         const param = { ...values };
         delete param.avatar;
+        delete param.id;
         const response = await api_admin_createNewUser(param);
         const newRow = Object.keys(response.data).map((key) => {
           return response.data[key];
@@ -75,8 +79,8 @@ export default function HandleUserModal({
             title: <div style={{ color: "red" }}> Failed</div>,
             content: (
               <>
-                {error.response.data.message.split(",").map((el) => {
-                  return <div>{el}</div>;
+                {error.response.data.message.split(",").map((el, idx) => {
+                  return <div key={idx}>{el}</div>;
                 })}
               </>
             ),
@@ -112,8 +116,8 @@ export default function HandleUserModal({
             title: <div style={{ color: "red" }}> Failed</div>,
             content: (
               <>
-                {error.response.data.message.split(",").map((el) => {
-                  return <div>{el}</div>;
+                {error.response.data.message.split(",").map((el, idx) => {
+                  return <div key={idx}>{el}</div>;
                 })}
               </>
             ),
@@ -134,7 +138,7 @@ export default function HandleUserModal({
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitUser}
         validationSchema={validateUserInfo}
       >
         {(props) => {
@@ -157,6 +161,9 @@ export default function HandleUserModal({
                 }}
                 okText={isAddingUser ? "Add new user" : "Update user"}
                 confirmLoading={submitting}
+                okButtonProps={{
+                  disabled: Object.keys(props.errors).length !== 0,
+                }}
               >
                 <Box component="div">
                   <Grid container spacing={2}>

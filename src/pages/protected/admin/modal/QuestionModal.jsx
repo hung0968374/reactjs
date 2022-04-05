@@ -61,8 +61,8 @@ export default function QuestionModal({
             title: <div style={{ color: "red" }}> Failed</div>,
             content: (
               <>
-                {error.response.data.message.split(",").map((el) => {
-                  return <div>{el}</div>;
+                {error.response.data.message.split(",").map((el, idx) => {
+                  return <div key={idx}>{el}</div>;
                 })}
               </>
             ),
@@ -99,8 +99,8 @@ export default function QuestionModal({
             title: <div style={{ color: "red" }}> Failed</div>,
             content: (
               <>
-                {error.response.data.message.split(",").map((el) => {
-                  return <div>{el}</div>;
+                {error.response.data.message.split(",").map((el, idx) => {
+                  return <div key={idx}>{el}</div>;
                 })}
               </>
             ),
@@ -144,6 +144,9 @@ export default function QuestionModal({
                 }}
                 okText={addQuesModal ? "Add new question" : "Update question"}
                 confirmLoading={submitting}
+                okButtonProps={{
+                  disabled: Object.keys(props.errors).length !== 0,
+                }}
               >
                 <Box component="div">
                   <Grid container spacing={2}>
