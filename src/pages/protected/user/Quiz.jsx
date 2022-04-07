@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CircularProgress, createTheme } from "@material-ui/core";
 import { ThemeProvider, Card, Box } from "@mui/material";
 import CardContent from "@mui/material/CardContent";

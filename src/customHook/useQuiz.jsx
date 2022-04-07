@@ -62,7 +62,7 @@ export default function useQuiz(currIdxOfQues, questionSubmitted = false) {
     return () => {
       clearInterval(timeInterval);
     };
-  }, [questions, currIdxOfQues]);
+  }, [questions, currIdxOfQues, questionSubmitted]);
 
   const setSelectedAns = useCallback(
     (idx, ansText) => {
