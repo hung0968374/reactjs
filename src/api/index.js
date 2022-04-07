@@ -33,51 +33,53 @@ const setAuthFalse = () => {
 };
 
 function createAxiosResponseInterceptor() {
-  const userRefreshToken = JSON.parse(
-    JSON.parse(localStorage.getItem("persist:root"))?.auth
-  )?.otherInfos?.tokens?.refresh?.token;
-  const userAccessToken = JSON.parse(
-    JSON.parse(localStorage.getItem("persist:root"))?.auth
-  )?.otherInfos?.tokens?.access?.token;
+  if (localStorage.length > 0) {
+    const userRefreshToken = JSON.parse(
+      JSON.parse(localStorage.getItem("persist:root"))?.auth
+    )?.otherInfos?.tokens?.refresh?.token;
+    const userAccessToken = JSON.parse(
+      JSON.parse(localStorage.getItem("persist:root"))?.auth
+    )?.otherInfos?.tokens?.access?.token;
 
-  const interceptor = API.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (
-        error.response.status !== 401 ||
-        error.response.data.message === LOGIN_ERROR
-      ) {
-        return Promise.reject(error);
-      }
-
-      API.interceptors.response.eject(interceptor);
-      return axios
-        .post("https://fwa-ec-quiz.herokuapp.com/v1/auth/refresh-tokens", {
-          refreshToken: userRefreshToken,
-        })
-        .then((response) => {
-          ///save token
-          const newAccessToken = response.data.access.token;
-          const newRefreshToken = response.data.refresh.token;
-          setNewLocalStorage(
-            userAccessToken,
-            newAccessToken,
-            userRefreshToken,
-            newRefreshToken
-          );
-
-          error.response.config.headers["Authorization"] =
-            "Bearer " + newAccessToken;
-          return axios(error.response.config);
-        })
-        .catch((error) => {
-          setAuthFalse();
-          window.location.href = "http://localhost:3000";
+    const interceptor = API.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (
+          error.response.status !== 401 ||
+          error.response.data.message === LOGIN_ERROR
+        ) {
           return Promise.reject(error);
-        })
-        .finally(createAxiosResponseInterceptor);
-    }
-  );
+        }
+
+        API.interceptors.response.eject(interceptor);
+        return axios
+          .post("https://fwa-ec-quiz.herokuapp.com/v1/auth/refresh-tokens", {
+            refreshToken: userRefreshToken,
+          })
+          .then((response) => {
+            ///save token
+            const newAccessToken = response.data.access.token;
+            const newRefreshToken = response.data.refresh.token;
+            setNewLocalStorage(
+              userAccessToken,
+              newAccessToken,
+              userRefreshToken,
+              newRefreshToken
+            );
+
+            error.response.config.headers["Authorization"] =
+              "Bearer " + newAccessToken;
+            return axios(error.response.config);
+          })
+          .catch((error) => {
+            setAuthFalse();
+            window.location.href = "http://localhost:3000";
+            return Promise.reject(error);
+          })
+          .finally(createAxiosResponseInterceptor);
+      }
+    );
+  }
 }
 createAxiosResponseInterceptor();
 
