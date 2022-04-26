@@ -17,12 +17,14 @@ import AdminAuth from "./pages/protected/admin/AdminAuth";
 import Dashboard from "./pages/protected/admin/Dashboard";
 import AdminLayout from "./pages/Layout/admin/AdminLayout";
 import User from "./pages/protected/admin/User";
+import Firebase from "./pages/Firebase";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/firebase" element={<Firebase />} />
         <Route element={<RestrictLoginAndRegister />}>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/signUp" element={<SignUp />}></Route>
